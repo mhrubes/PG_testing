@@ -30,13 +30,19 @@
 					}
 				},
 				"url": {
-					"raw": "{{localhost}}3000/api/items",
+					"raw": "{{localhost}}3000/api/items?withView=true",
 					"host": [
 						"{{localhost}}3000"
 					],
 					"path": [
 						"api",
 						"items"
+					],
+					"query": [
+						{
+							"key": "withView",
+							"value": "true"
+						}
 					]
 				}
 			},
