@@ -55,10 +55,12 @@ app.get('/api/items', authenticateToken, async (req, res) => {
     try {
         orderBy = orderBy === '' ? '-id' : orderBy
 
+        const prefixes = new Set(['+', '-'])
+
         if (orderBy.includes('name')) {
             orderBy = `COALESCE(CAST(SUBSTRING(i.name FROM '[0-9]+') AS INTEGER), 0) ${orderBy.startsWith('+') ? 'DESC' : 'ASC'}`
         } else {
-            orderBy = `${orderBy.slice(1)} ${orderBy.startsWith('+') ? 'DESC' : 'ASC'}`
+            orderBy = `${prefixes.has(orderBy[0]) ? orderBy.slice(1) : orderBy} ${orderBy.startsWith('+') ? 'DESC' : 'ASC'}`
         }
 
         let query
