@@ -1,5 +1,9 @@
 ## Available Scripts
 
+I used the application for load testing with millions of records in the items table.
+
+## Available Scripts
+
 In the project directory, you can run:
 
 ### `node server.js` `nodemon server.js`
