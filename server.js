@@ -61,16 +61,17 @@ app.get('/api/items', authenticateToken, async (req, res) => {
             orderBy = `${orderBy.slice(1)} ${orderBy.startsWith('+') ? 'DESC' : 'ASC'}`
         }
 
-        // Spuštění SQL dotazu k načtení všech dat z tabulky
-        // const result = await db.query(`
-        //       SELECT * FROM cbos.v_items
-        //       ORDER BY ${orderBy}
-        //       ${limit ? ` LIMIT ${limit}` : ''}
-        //       ${offset ? ` OFFSET ${offset}` : ''}
-        //   `)
-
-        const query = `
-            SELECT i.id,
+        let query
+        if (req.query.withView === 'true') {
+            query = `
+                SELECT * FROM cbos.v_items
+                ORDER BY ${orderBy}
+                ${limit ? ` LIMIT ${limit}` : ''}
+                ${offset ? ` OFFSET ${offset}` : ''}
+            `
+        } else {
+            query = `
+                SELECT i.id,
                 i.name,
                 cg.cgroup_id,
                 cg.name AS central_group_name,
@@ -81,14 +82,16 @@ app.get('/api/items', authenticateToken, async (req, res) => {
                 i.price,
                 i.created,
                 i.updated
-            FROM cbos.items i
+                FROM cbos.items i
                 JOIN cbos.central_groups cg ON cg.cgroup_id = i.cgroup_id
                 JOIN cbos.vat_groups vg ON vg.vat_id = i.vat_id
                 JOIN cbos.ccs_groups ccg ON ccg.ccs_id = i.ccs_id
-              ORDER BY ${orderBy}
-              ${limit ? ` LIMIT ${limit}` : ''}
-              ${offset ? ` OFFSET ${offset}` : ''}
+                ORDER BY ${orderBy}
+                ${limit ? ` LIMIT ${limit}` : ''}
+                ${offset ? ` OFFSET ${offset}` : ''}
             `
+        }
+
         console.log(query)
         const result = await db.query(query)
 
